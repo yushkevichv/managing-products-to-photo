@@ -13,3 +13,5 @@ yarn-error.log
 .idea
 app.js
 app.css
+.phpstorm.meta.php
+_ide_helper.php
