@@ -19,8 +19,9 @@ class PhotoContainerRepository
             ->get()
             ->groupBy('container_id');
 
+
         foreach ($containers as $containerId => $container) {
-            $result = [
+            $result[] = [
                 'container_id' => $containerId,
                 'product_id' => $container->pluck('product_id')->toArray(),
                 'type_id' => $container->pluck('type_id')->unique()->values()->toArray(),
