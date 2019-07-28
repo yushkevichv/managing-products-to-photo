@@ -2,14 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Repositories\PhotoContainerRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class PhotoContainersController extends Controller
 {
-    public function index(Request $request)
-    {
-        dd('1');
+    protected $photoContainerRepository;
 
+    public function __construct(PhotoContainerRepository $photoContainerRepository)
+    {
+        $this->photoContainerRepository = $photoContainerRepository;
+    }
+
+    public function index()
+    {
+        $result = $this->photoContainerRepository->getContainersWithTypedProducts();
+
+        dd($result);
     }
 }
