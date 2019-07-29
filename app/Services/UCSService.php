@@ -8,29 +8,73 @@ use Illuminate\Support\Collection;
 
 class UCSService
 {
+    protected $graph;
+    protected $data;
+    protected $accumProductTypes;
+    protected $containers;
+    protected $start;
+
+    public function __construct()
+    {
+        $this->containers = collect([]);
+    }
+
+    public function initGraph(Collection $data)
+    {
+        $initStart = $this->getInitStart($data);
+        $this->start = $initStart['container_id'];
+        $this->accumProductTypes = $initStart['type_id'];
+        $this->containers = collect($this->start);
+        $this->data = $data;
+        $this->calculateCost();
+    }
+
     public function getInitStart(Collection $data) : array
     {
         $max = $data->max('unique_count');
         return $data->where('unique_count', $max)->first();
     }
 
-    public function initGraph($data)
+    public function calculateCost()
     {
-        $start = $this->getInitStart($data);
         $graph = [];
-        foreach ($data as $key => $value) {
-            if($start['container_id'] == $key) {
-                continue;
-            }
+        $data = $this->data->whereNotIn('container_id', $this->containers);
 
-            $graph[$start['container_id']][$key] = $this->getCost($start, $value);
+        foreach ($data as $key => $value) {
+            $graph[$key] = $this->getCost($this->accumProductTypes, $value);
         }
-        return $graph;
+        $this->graph = collect($graph);
     }
 
     public function getCost(array $a, array $b) : int
     {
-        return count(array_diff($a['type_id'], $b['type_id']));
+        $data = array_filter($b['type_id'], function ($var) use ($a) {
+            return !in_array($var, $a);
+        });
+
+        return count($data);
     }
 
+    public function getMinContainers()
+    {
+        $needRecalc = true;
+        while($needRecalc) {
+            $nextContainer = $this->graph->sort()->keys()->last();
+            if(!$nextContainer || ($this->graph[$nextContainer] == 0))  {
+                $needRecalc = false;
+                break;
+            }
+
+            $this->containers->push($nextContainer);
+            $this->accumProductTypes = array_values(
+                array_unique(
+                    array_merge($this->accumProductTypes, $this->data->toArray()[$nextContainer]['type_id'])
+                )
+            );
+
+            $this->calculateCost();
+        }
+
+        return $this->containers;
+    }
 }

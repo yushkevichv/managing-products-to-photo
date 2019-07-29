@@ -21,8 +21,9 @@ class PhotoContainersController extends Controller
     public function index()
     {
         $data = $this->photoContainerRepository->getContainersWithTypedProducts();
-        $graph = $this->UCSService->initGraph($data);
+        $this->UCSService->initGraph($data);
+        $minContainers = $this->UCSService->getMinContainers();
 
-        dd($graph, $data);
+        return response()->json(['data' => $minContainers, 'count' => count($minContainers)], 200);
     }
 }
