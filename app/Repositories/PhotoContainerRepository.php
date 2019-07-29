@@ -5,10 +5,11 @@ namespace App\Repositories;
 
 
 use App\Models\Container;
+use Illuminate\Support\Collection;
 
 class PhotoContainerRepository
 {
-    public function getContainersWithTypedProducts()
+    public function getContainersWithTypedProducts() : Collection
     {
         $result = [];
 
@@ -21,14 +22,14 @@ class PhotoContainerRepository
 
 
         foreach ($containers as $containerId => $container) {
-            $result[] = [
+            $result[$containerId]= [
                 'container_id' => $containerId,
                 'product_id' => $container->pluck('product_id')->toArray(),
                 'type_id' => $container->pluck('type_id')->unique()->values()->toArray(),
                 'unique_count' => $container->pluck('type_id')->unique()->count(),
             ];
         }
-        return $result;
+        return collect($result);
     }
 
 }

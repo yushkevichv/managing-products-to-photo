@@ -5,20 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Repositories\PhotoContainerRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\UCSService;
 
 class PhotoContainersController extends Controller
 {
     protected $photoContainerRepository;
+    protected $UCSService;
 
-    public function __construct(PhotoContainerRepository $photoContainerRepository)
+    public function __construct(PhotoContainerRepository $photoContainerRepository, UCSService $UCSService)
     {
         $this->photoContainerRepository = $photoContainerRepository;
+        $this->UCSService = $UCSService;
     }
 
     public function index()
     {
-        $result = $this->photoContainerRepository->getContainersWithTypedProducts();
+        $data = $this->photoContainerRepository->getContainersWithTypedProducts();
+        $graph = $this->UCSService->initGraph($data);
 
-        dd($result);
+        dd($graph, $data);
     }
 }
