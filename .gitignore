@@ -16,3 +16,4 @@ app.css
 .phpstorm.meta.php
 _ide_helper.php
 storage/debugbar
+*.DS_Store

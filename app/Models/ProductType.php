@@ -12,4 +12,9 @@ class ProductType extends Model
         return $this->hasMany(Product::class, 'type_id');
     }
 
+    public function containers()
+    {
+        return $this->belongsToMany(Container::class, 'container_product_type');
+    }
+
 }

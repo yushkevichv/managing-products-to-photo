@@ -28,7 +28,9 @@ class DatabaseSeeder extends Seeder
         factory(App\Models\Container::class, $chunks->count())
             ->create()
             ->each(function ($container) use ($chunks)  {
+                // if we need to generate products
                 $container->products()->attach($chunks[$container->id -1]->pluck('id'));
+                $container->product_types()->attach($chunks[$container->id -1]->pluck('type_id')->unique());
             });
     }
 }
