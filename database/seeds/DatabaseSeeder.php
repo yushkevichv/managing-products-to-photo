@@ -12,10 +12,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // make product types and generate equal number products for each
-        factory(App\Models\ProductType::class, 10)
+        factory(App\Models\ProductType::class, 100)
             ->create()
             ->each(function ($productType) {
-                factory(App\Models\Product::class, 10)->create([
+                factory(App\Models\Product::class, 100)->create([
                     'type_id' => $productType->id
                 ]);
             });
