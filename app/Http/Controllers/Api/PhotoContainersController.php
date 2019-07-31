@@ -21,7 +21,7 @@ class PhotoContainersController extends Controller
     public function index()
     {
         $timeStart = microtime(true);
-        $data = $this->photoContainerRepository->getContainersWithTypedProducts();
+        $data = $this->photoContainerRepository->getContainersAndProductTypes();
         echo 'time work repo: '.(microtime(true) - $timeStart );
         $timeStart = microtime(true);
         $this->UCSService->initGraph($data);
