@@ -8,10 +8,34 @@ use Illuminate\Support\Collection;
 
 class UCSService
 {
+    /**
+     * Store current version of graph
+     * @var Collection
+     */
     protected $graph;
+
+    /**
+     * Store init data from repository
+     * @var Collection
+     */
     protected $data;
+
+    /**
+     * Store current version of unique array different product types
+     * @var array
+     */
     protected $accumProductTypes;
+
+    /**
+     * stack for storing container ids
+     * @var Collection
+     */
     protected $containers;
+
+    /**
+     * store start containerId
+     * @var int
+     */
     protected $start;
 
     public function __construct()
@@ -19,7 +43,12 @@ class UCSService
         $this->containers = collect([]);
     }
 
-    public function initGraph(Collection $data)
+    /**
+     * Calculate init params. Init graph with start node and cost
+     *
+     * @param  Collection  $data
+     */
+    private function initGraph(Collection $data) : void
     {
         $initStart = $this->getInitStart($data);
         $this->start = $initStart['container_id'];
@@ -29,13 +58,23 @@ class UCSService
         $this->calculateCost();
     }
 
-    public function getInitStart(Collection $data) : array
+    /**
+     * get start node how max count unique product types
+     *
+     * @param  Collection  $data
+     * @return array
+     */
+    private function getInitStart(Collection $data): array
     {
         $max = $data->max('unique_count');
         return $data->where('unique_count', $max)->first();
     }
 
-    public function calculateCost()
+    /**
+     * skip containers in stack for optimisation.
+     * Calculate cost for all V
+     */
+    private function calculateCost() : void
     {
         $graph = [];
         $data = $this->data->whereNotIn('container_id', $this->containers);
@@ -47,21 +86,37 @@ class UCSService
         $this->graph = collect($graph);
     }
 
-    public function getCost(array $a, array $b, $countStart) : int
+    /**
+     * countStart should be equal count($a). Added for optimistaion calculation in cycle.
+     *
+     * @param  array  $a
+     * @param  array  $b
+     * @param $countStart
+     * @return int
+     */
+    private function getCost(array $a, array $b, $countStart): int
     {
         $count = count(array_unique(
-            array_merge($a, $b['type_id'])
-        )) - $countStart;
+                array_merge($a, $b['type_id'])
+            )) - $countStart;
         return $count;
     }
 
-    public function getMinContainers()
+    /**
+     * Calculate init data and start node. Start node is max of count unique product types
+     * Calculate cost of each V: count new unique product types
+     * Add max. Iterate while diff = 0 or we check all containers.
+     * It means, we reach goal and have min containers with all different product types
+     *
+     * @return Collection
+     */
+    public function getMinContainers($data)
     {
-        $needRecalc = true;
-        while($needRecalc) {
+        $this->initGraph($data);
+
+        while (true) {
             $nextContainer = $this->graph->sort()->keys()->last();
-            if(!$nextContainer || ($this->graph[$nextContainer] == 0))  {
-                $needRecalc = false;
+            if (!$nextContainer || ($this->graph[$nextContainer] == 0)) {
                 break;
             }
 

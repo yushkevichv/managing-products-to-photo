@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Repositories\PhotoContainerRepository;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\UCSService;
 
@@ -21,8 +20,7 @@ class PhotoContainersController extends Controller
     public function index()
     {
         $data = $this->photoContainerRepository->getContainersAndProductTypes();
-        $this->UCSService->initGraph($data);
-        $minContainers = $this->UCSService->getMinContainers();
+        $minContainers = $this->UCSService->getMinContainers($data);
 
         return response()->json(['data' => $minContainers, 'count' => count($minContainers)], 200);
     }
