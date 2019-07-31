@@ -53,12 +53,6 @@ class UCSService
             array_merge($a, $b['type_id'])
         )) - $countStart;
         return $count;
-
-//        $data = array_filter($b['type_id'], function ($var) use ($a) {
-//            return !in_array($var, $a);
-//        });
-//
-//        return count($data);
     }
 
     public function getMinContainers()

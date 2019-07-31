@@ -20,15 +20,9 @@ class PhotoContainersController extends Controller
 
     public function index()
     {
-        $timeStart = microtime(true);
         $data = $this->photoContainerRepository->getContainersAndProductTypes();
-        echo 'time work repo: '.(microtime(true) - $timeStart );
-        $timeStart = microtime(true);
         $this->UCSService->initGraph($data);
-        echo 'time init graph: '.(microtime(true) - $timeStart );
-        $timeStart = microtime(true);
         $minContainers = $this->UCSService->getMinContainers();
-        echo 'time get containers: '.(microtime(true) - $timeStart );
 
         return response()->json(['data' => $minContainers, 'count' => count($minContainers)], 200);
     }

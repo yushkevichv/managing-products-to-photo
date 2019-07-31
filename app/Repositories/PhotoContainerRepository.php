@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class PhotoContainerRepository
 {
+    /**
+     * use just if need more data.
+     * not using for current task
+     * @return Collection
+     */
     public function getContainersWithTypedProducts() : Collection
     {
         $result = [];
