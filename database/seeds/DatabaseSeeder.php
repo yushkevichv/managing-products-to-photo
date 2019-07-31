@@ -11,7 +11,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        //disable foreign key check for this connection before running seeders
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('products')->truncate();
+        DB::table('product_types')->truncate();
+        DB::table('containers')->truncate();
+        DB::table('product_container')->truncate();
+        DB::table('container_product_type')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // make product types and generate equal number products for each
+
         factory(App\Models\ProductType::class, 100)
             ->create()
             ->each(function ($productType) {
@@ -32,6 +42,7 @@ class DatabaseSeeder extends Seeder
         factory(App\Models\Container::class, $chunks->count())
             ->create()
             ->each(function ($container) use ($chunks)  {
+                // @todo fix calculate shift chunks if we want call seedeer at additional
                 // if we need to generate products
                 $container->products()->attach($chunks[$container->id -1]->pluck('id'));
                 $container->product_types()->attach($chunks[$container->id -1]->pluck('type_id')->unique());
