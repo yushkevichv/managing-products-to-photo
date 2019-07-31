@@ -20,6 +20,10 @@ class PhotoContainersController extends Controller
     public function index()
     {
         $data = $this->photoContainerRepository->getContainersAndProductTypes();
+        if($data->count() == 0) {
+            return response()->json(['data' => [], 'count' => 0], 200);
+        }
+
         $minContainers = $this->UCSService->getMinContainers($data);
 
         return response()->json(['data' => $minContainers, 'count' => count($minContainers)], 200);
