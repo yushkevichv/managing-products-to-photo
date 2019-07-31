@@ -15,14 +15,18 @@ class DatabaseSeeder extends Seeder
         factory(App\Models\ProductType::class, 100)
             ->create()
             ->each(function ($productType) {
-                factory(App\Models\Product::class, 100)->create([
-                    'type_id' => $productType->id
+                $now = now();
+                $products = factory(App\Models\Product::class, 100)->make([
+                    'type_id' => $productType->id,
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ]);
+                \App\Models\Product::insert($products->toArray());
             });
 
         // get all products, shuffle for random and chunked for pack at containers
         $products = \App\Models\Product::all()->shuffle();
-        $chunks = $products->chunk(10);
+        $chunks = $products->chunk(100);
 
         // create container for every chunk and attach products to container
         factory(App\Models\Container::class, $chunks->count())
