@@ -40,19 +40,25 @@ class UCSService
         $graph = [];
         $data = $this->data->whereNotIn('container_id', $this->containers);
 
+        $countAccumProductTypes = count($this->accumProductTypes);
         foreach ($data as $key => $value) {
-            $graph[$key] = $this->getCost($this->accumProductTypes, $value);
+            $graph[$key] = $this->getCost($this->accumProductTypes, $value, $countAccumProductTypes);
         }
         $this->graph = collect($graph);
     }
 
-    public function getCost(array $a, array $b) : int
+    public function getCost(array $a, array $b, $countStart) : int
     {
-        $data = array_filter($b['type_id'], function ($var) use ($a) {
-            return !in_array($var, $a);
-        });
+        $count = count(array_unique(
+            array_merge($a, $b['type_id'])
+        )) - $countStart;
+        return $count;
 
-        return count($data);
+//        $data = array_filter($b['type_id'], function ($var) use ($a) {
+//            return !in_array($var, $a);
+//        });
+//
+//        return count($data);
     }
 
     public function getMinContainers()
