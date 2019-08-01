@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/containers/get-optim', 'Api\PhotoContainersController@getOptimContainers');
+Route::get('/containers/get-optimal', 'Api\PhotoContainersController@getOptimalContainers');
 Route::get('/containers/', 'Api\PhotoContainersController@index');
 Route::get('/containers/{id}', 'Api\PhotoContainersController@show');
 Route::delete('/containers/{id}', 'Api\PhotoContainersController@destroy');

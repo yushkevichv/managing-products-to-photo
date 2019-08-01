@@ -7,7 +7,7 @@ use App\Http\Resources\ContainerResource;
 use App\Models\Container;
 use App\Models\Product;
 use App\Repositories\PhotoContainerRepository;
-use App\Services\UCSService;
+use App\Services\ContainerInformationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -15,22 +15,22 @@ use Illuminate\Support\Facades\Validator;
 class PhotoContainersController extends Controller
 {
     protected $photoContainerRepository;
-    protected $UCSService;
+    protected $сontainerInformationService;
 
-    public function __construct(PhotoContainerRepository $photoContainerRepository, UCSService $UCSService)
+    public function __construct(PhotoContainerRepository $photoContainerRepository, ContainerInformationService $сontainerInformationService)
     {
         $this->photoContainerRepository = $photoContainerRepository;
-        $this->UCSService = $UCSService;
+        $this->сontainerInformationService = $сontainerInformationService;
     }
 
-    public function getOptimContainers()
+    public function getOptimalContainers()
     {
         $data = $this->photoContainerRepository->getContainersAndProductTypes();
         if ($data->count() == 0) {
             return response()->json(['data' => [], 'count' => 0], 200);
         }
 
-        $minContainers = $this->UCSService->getMinContainers($data);
+        $minContainers = $this->сontainerInformationService->getMinContainers($data);
 
         return response()->json(['data' => $minContainers, 'count' => count($minContainers)], 200);
     }

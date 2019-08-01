@@ -21,7 +21,7 @@ class PhotoContainersTest extends TestCase
     public function testSuccessfulGetOptimalContainers()
     {
 //        Artisan::call('db:seed');
-        $response = $this->get('/api/containers/get-optim');
+        $response = $this->get('/api/containers/get-optimal');
 
         $data = json_decode($response->getContent());
 

@@ -6,7 +6,7 @@ namespace App\Services;
 
 use Illuminate\Support\Collection;
 
-class UCSService
+final class ContainerInformationService
 {
     /**
      * Store current version of graph
@@ -24,7 +24,7 @@ class UCSService
      * Store current version of unique array different product types
      * @var array
      */
-    protected $accumProductTypes;
+    protected $accumulateProductTypes;
 
     /**
      * stack for storing container ids
@@ -52,7 +52,7 @@ class UCSService
     {
         $initStart = $this->getInitStart($data);
         $this->start = $initStart['container_id'];
-        $this->accumProductTypes = $initStart['type_id'];
+        $this->accumulateProductTypes = $initStart['type_id'];
         $this->containers = collect($this->start);
         $this->data = $data;
         $this->calculateCost();
@@ -79,9 +79,9 @@ class UCSService
         $graph = [];
         $data = $this->data->whereNotIn('container_id', $this->containers);
 
-        $countAccumProductTypes = count($this->accumProductTypes);
+        $countAccumulateProductTypes = count($this->accumulateProductTypes);
         foreach ($data as $key => $value) {
-            $graph[$key] = $this->getCost($this->accumProductTypes, $value, $countAccumProductTypes);
+            $graph[$key] = $this->getCost($this->accumulateProductTypes, $value, $countAccumulateProductTypes);
         }
         $this->graph = collect($graph);
     }
@@ -121,9 +121,9 @@ class UCSService
             }
 
             $this->containers->push($nextContainer);
-            $this->accumProductTypes = array_values(
+            $this->accumulateProductTypes = array_values(
                 array_unique(
-                    array_merge($this->accumProductTypes, $this->data->toArray()[$nextContainer]['type_id'])
+                    array_merge($this->accumulateProductTypes, $this->data->toArray()[$nextContainer]['type_id'])
                 )
             );
 
