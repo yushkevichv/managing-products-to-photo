@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
 
         // get all products, shuffle for random and chunked for pack at containers
         $products = \App\Models\Product::all()->shuffle();
-        $chunks = $products->chunk(100);
+        $chunks = $products->chunk(\App\Models\Container::PRODUCT_COUNT_AT_CONTAINER);
 
         // create container for every chunk and attach products to container
         factory(App\Models\Container::class, $chunks->count())

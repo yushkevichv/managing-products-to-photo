@@ -17,4 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/containers/get', 'Api\PhotoContainersController@index');
+Route::get('/containers/get-optim', 'Api\PhotoContainersController@getOptimContainers');
+Route::get('/containers/', 'Api\PhotoContainersController@index');
+Route::get('/containers/{id}', 'Api\PhotoContainersController@show');
+Route::post('/containers/', 'Api\PhotoContainersController@store');
