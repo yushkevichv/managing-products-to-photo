@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\ContainerResource;
 use App\Models\Container;
 use App\Models\Product;
 use App\Repositories\PhotoContainerRepository;
-use App\Http\Controllers\Controller;
 use App\Services\UCSService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +26,7 @@ class PhotoContainersController extends Controller
     public function getOptimContainers()
     {
         $data = $this->photoContainerRepository->getContainersAndProductTypes();
-        if($data->count() == 0) {
+        if ($data->count() == 0) {
             return response()->json(['data' => [], 'count' => 0], 200);
         }
 
@@ -37,7 +37,7 @@ class PhotoContainersController extends Controller
 
     public function index(Request $request)
     {
-        $containers = Container::with('products')->get();
+        $containers = Container::with('products')->paginate(100);
 
         return ContainerResource::collection($containers);
     }
@@ -45,11 +45,11 @@ class PhotoContainersController extends Controller
     public function show(Request $request, $id)
     {
         $container = Container::find($id);
-        if(!$container) {
+        if (!$container) {
             return response()->json(['error' => 'Container not found'], 404);
         }
 
-        return new ContainerResource($container) ;
+        return new ContainerResource($container);
     }
 
     public function store(Request $request)
@@ -69,17 +69,24 @@ class PhotoContainersController extends Controller
         $productIds = array_column($request->products, 'id');
         $productTypes = Product::select('type_id')->distinct()->whereIn('id', $productIds)->get();
 
-
         DB::transaction(function () use ($container, $productIds, $productTypes) {
             $container->save();
             $container->products()->attach($productIds);
             $container->product_types()->attach($productTypes->pluck('type_id'));
         });
 
-
-
-
-
         return response()->json(['data' => 'Successful created'], 201);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $container = Container::find($id);
+        if (!$container) {
+            return response()->json(['error' => 'Container not found'], 404);
+        }
+
+        $container->delete();
+
+        return response()->json(['data' => 'Successful deleted'], 200);
     }
 }
