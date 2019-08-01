@@ -125,6 +125,39 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Container volume
+    |--------------------------------------------------------------------------
+    |
+    | This key used for seeding data and validation at store new container
+    |
+    */
+
+    'product_count_at_container' => env('APP_PRODUCT_COUNT_AT_CONTAINER', 10),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default product types count
+    |--------------------------------------------------------------------------
+    |
+    | This key used for seeding data
+    |
+    */
+
+    'product_type_count' => env('APP_PRODUCT_TYPE_COUNT', 100),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default products count for every product type
+    |--------------------------------------------------------------------------
+    |
+    | This key used for seeding data
+    |
+    */
+
+    'products_by_type_count' => env('APP_PRODUCTS_BY_TYPE_COUNT', 100),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |

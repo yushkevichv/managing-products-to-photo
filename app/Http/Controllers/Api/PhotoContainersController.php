@@ -56,7 +56,7 @@ class PhotoContainersController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
-            'products' => 'array|required|between:'.Container::PRODUCT_COUNT_AT_CONTAINER.', '.Container::PRODUCT_COUNT_AT_CONTAINER,
+            'products' => 'array|required|between:'.\Config::get('app.product_count_at_container').', '.\Config::get('app.product_count_at_container'),
             'products.*.id' => 'required|exists:products',
         ]);
 

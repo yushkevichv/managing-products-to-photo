@@ -21,12 +21,11 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // make product types and generate equal number products for each
-
-        factory(App\Models\ProductType::class, 100)
+        factory(App\Models\ProductType::class, (int) \Config::get('app.product_type_count'))
             ->create()
             ->each(function ($productType) {
                 $now = now();
-                $products = factory(App\Models\Product::class, 100)->make([
+                $products = factory(App\Models\Product::class, (int) \Config::get('app.products_by_type_count'))->make([
                     'type_id' => $productType->id,
                     'created_at' => $now,
                     'updated_at' => $now,
@@ -36,7 +35,7 @@ class DatabaseSeeder extends Seeder
 
         // get all products, shuffle for random and chunked for pack at containers
         $products = \App\Models\Product::all()->shuffle();
-        $chunks = $products->chunk(\App\Models\Container::PRODUCT_COUNT_AT_CONTAINER);
+        $chunks = $products->chunk(\Config::get('app.product_count_at_container'));
 
         // create container for every chunk and attach products to container
         factory(App\Models\Container::class, $chunks->count())

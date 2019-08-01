@@ -17,3 +17,12 @@
 
 ## API документация 
 Доступна локально в файле apiDocs.yaml либо онлайн версия: https://app.swaggerhub.com/apis/yushkevichv/managing-product-to-photo/1.0.0 
+
+## Установка
+После клонирования проекта необходимо выполнить команды:
+* cp .env.example .env
+* указать корректные параметры конфигурации в .env файле
+* composer install
+* php artisan migrate
+* php artisan db:seed (для заполнения тестовыми данными)
+* php artisan key:generate 
